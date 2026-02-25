@@ -22,7 +22,7 @@ public class Loan {
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
-    private Client clientId;
+    private Client client;
 
     @Column(nullable = false)
     private BigDecimal requestedAmount;
