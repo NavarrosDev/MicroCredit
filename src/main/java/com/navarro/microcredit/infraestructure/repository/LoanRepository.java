@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface LoanRepository extends JpaRepository<Loan, UUID> {
 
     Optional<Loan> findByClientId(UUID clientId);
+    boolean existsByClientId(UUID clientId);
 }

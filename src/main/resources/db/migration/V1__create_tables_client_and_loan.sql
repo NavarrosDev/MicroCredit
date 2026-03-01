@@ -5,7 +5,7 @@ CREATE TABLE tb_client (
     monthly_income DECIMAL(15, 2) NOT NULL
 );
 
-CREATE TABLE loan (
+CREATE TABLE tb_loan (
     id UUID PRIMARY KEY,
     client_id UUID NOT NULL,
     requested_amount DECIMAL(15, 2) NOT NULL,
