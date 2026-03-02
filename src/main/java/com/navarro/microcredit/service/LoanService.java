@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.swing.plaf.nimbus.State;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -36,12 +37,13 @@ public class LoanService {
         InterestCalculatorStrategy strategy = chooseStrategyBasedOnIncome(client.getMonthlyIncome());
         BigDecimal totalValue = strategy.calculate(requestedAmount, installments);
 
-        Loan loan = new Loan();
-        loan.setClient(client);
-        loan.setRequestedAmount(requestedAmount);
-        loan.setTotalValueIncludingInterest(totalValue);
-        loan.setNumberOfInstallments(installments);
-        loan.setStateLoan(StateLoan.PENDING);
+        Loan loan = Loan.builder()
+                .client(client)
+                .requestedAmount(requestedAmount)
+                .totalValueIncludingInterest(totalValue)
+                .numberOfInstallments(installments)
+                .stateLoan(StateLoan.PENDING)
+                .build();
 
         Loan savedLoan = loanRepository.save(loan);
         rabbitTemplate.convertAndSend(RabbitMQConfig.LOAN_REQUEST_QUEUE, savedLoan.getId().toString());
@@ -58,18 +60,4 @@ public class LoanService {
             return highRiskStrategy;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

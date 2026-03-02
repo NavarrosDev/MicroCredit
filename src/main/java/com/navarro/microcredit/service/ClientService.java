@@ -21,10 +21,12 @@ public class ClientService {
             throw new IllegalArgumentException("Cliente já existe.");
         }
 
-        Client client = new Client();
-        client.setCpf(cpf);
-        client.setName(name);
-        client.setMonthlyIncome(monthlyIncome);
+        Client client = Client.builder()
+                .cpf(cpf)
+                .name(name)
+                .monthlyIncome(monthlyIncome)
+                .build();
+
         return clientRepository.save(client);
     }
 
