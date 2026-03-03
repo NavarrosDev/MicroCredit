@@ -5,6 +5,9 @@ import com.navarro.microcredit.api.dto.ClientRequestDTO;
 import com.navarro.microcredit.api.dto.ClientResponseDTO;
 import com.navarro.microcredit.domain.entity.Client;
 import com.navarro.microcredit.service.ClientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,14 @@ public class ClientController {
 
     private final ClientService clientService;
 
+    @Operation(
+            summary = "Criação de um novo Cliente",
+            description = "Cria um novo cliente e salva no banco de dados"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou erro de regra de negócio")
+    })
     @PostMapping
     public ResponseEntity<ClientResponseDTO> createClient(@RequestBody @Valid ClientRequestDTO request) {
         Client client = clientService.createClient(
@@ -37,6 +48,14 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(
+            summary = "Deleta um Cliente",
+            description = "Deleta um cliente caso não tiver pendencias"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cliente deletado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou erro de regra de negócio")
+    })
     @DeleteMapping("{cpf}")
     public ResponseEntity<String> deleteClient(@PathVariable String cpf) {
         clientService.deleClient(cpf);

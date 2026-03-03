@@ -4,6 +4,9 @@ import com.navarro.microcredit.api.dto.LoanRequestDTO;
 import com.navarro.microcredit.api.dto.LoanResponseDTO;
 import com.navarro.microcredit.domain.entity.Loan;
 import com.navarro.microcredit.service.LoanService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +23,14 @@ public class LoanController {
 
     private final LoanService loanService;
 
+    @Operation(
+            summary = "Solicita um novo empréstimo",
+            description = "Cria um empréstimo com o status PENDING e envia para processamento assíncrono."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Empréstimo solicitado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou erro de regra de negócio")
+    })
     @PostMapping
     public ResponseEntity<LoanResponseDTO> loan(@RequestBody @Valid LoanRequestDTO request) {
         Loan loan = loanService.requestLoan(
