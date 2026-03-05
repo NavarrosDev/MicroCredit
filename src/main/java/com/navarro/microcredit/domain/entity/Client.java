@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -21,12 +23,15 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private String name;
-
     @Column(nullable = false,  unique = true)
     private String cpf;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private BigDecimal monthlyIncome;
+
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
+    private List<Loan> loans = new ArrayList<>();
 }

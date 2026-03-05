@@ -1,8 +1,6 @@
 package com.navarro.microcredit.api.controller;
 
-import com.navarro.microcredit.api.dto.ClientDTO;
-import com.navarro.microcredit.api.dto.ClientRequestDTO;
-import com.navarro.microcredit.api.dto.ClientResponseDTO;
+import com.navarro.microcredit.api.dto.*;
 import com.navarro.microcredit.domain.entity.Client;
 import com.navarro.microcredit.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,8 +16,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/client")
 @RequiredArgsConstructor
 public class ClientController {
-
     private final ClientService clientService;
+
+    @Operation(
+            summary = "Busca de um cliente por cpf.",
+            description = "Busca um cpf pelo seu cpf e ja lista todos seus empréstimos."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou erro de regra de negócio")
+    })
+    @GetMapping("/{cpf}")
+    public ResponseEntity<ClientLoansDTO> getClientByCpf(@PathVariable String cpf) {
+        Client client = clientService.getClientByCpf(cpf);
+        return ResponseEntity.ok(ClientLoansDTO.toDto(client));
+    }
 
     @Operation(
             summary = "Criação de um novo Cliente",
@@ -37,14 +48,8 @@ public class ClientController {
                 request.monthlyIncome()
         );
 
-        ClientDTO clientDTO = new ClientDTO(
-                client.getId(),
-                client.getCpf(),
-                client.getName(),
-                client.getMonthlyIncome()
-        );
-
-        ClientResponseDTO response = new ClientResponseDTO("Cliente criado com sucesso!", clientDTO);
+        ClientResponseDTO response =
+                new ClientResponseDTO("Cliente criado com sucesso!", ClientDTO.toDto(client));
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

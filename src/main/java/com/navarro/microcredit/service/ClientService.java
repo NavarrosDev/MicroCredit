@@ -2,7 +2,6 @@ package com.navarro.microcredit.service;
 
 import com.navarro.microcredit.domain.entity.Client;
 import com.navarro.microcredit.infraestructure.repository.ClientRepository;
-import com.navarro.microcredit.infraestructure.repository.LoanRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,11 @@ import java.math.BigDecimal;
 public class ClientService {
 
     private final ClientRepository clientRepository;
-    private final LoanRepository loanRepository;
+
+    public Client getClientByCpf(String cpf) {
+        return clientRepository.findByCpf(cpf)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente inexistente."));
+    }
 
     public Client createClient(String cpf, String name, BigDecimal monthlyIncome) {
         boolean existClient = clientRepository.existsByCpf(cpf);
@@ -34,7 +37,7 @@ public class ClientService {
         Client client = clientRepository.findByCpf(cpf)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente inexistente.") );
 
-        if (loanRepository.existsByClientId(client.getId())) {
+        if (!client.getLoans().isEmpty()) {
             throw new IllegalArgumentException("Cliente possui empréstimos vinculados.");
         }
 

@@ -38,13 +38,7 @@ public class LoanController {
                 request.requestedAmount(),
                 request.installments()
         );
-
-        LoanResponseDTO response = new LoanResponseDTO(
-                loan.getId(),
-                loan.getTotalValueIncludingInterest(),
-                loan.getStateLoan().getTitle(),
-                loan.getStateLoan().getDescription()
-        );
+        LoanResponseDTO response = LoanResponseDTO.toDto(loan);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
