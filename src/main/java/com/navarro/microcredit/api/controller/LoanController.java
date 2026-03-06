@@ -11,10 +11,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/loans")
@@ -41,5 +40,37 @@ public class LoanController {
         LoanResponseDTO response = LoanResponseDTO.toDto(loan);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(
+            summary = "Quita o empréstimo",
+            description = "Quita um emprestimo, alterando seu status para Quitado."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Empréstimo quitado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou erro de regra de negócio")
+    })
+    @PostMapping("/{id}/pay")
+    public ResponseEntity<LoanResponseDTO> payLoan(@PathVariable UUID id) {
+        Loan loan = loanService.payLoan(id);
+        LoanResponseDTO response = LoanResponseDTO.toDto(loan);
+
+        return  ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Cancela empréstimo",
+            description = "Cancela um emprestimo, alterando seu status para Cancelado."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Empréstimo cancelado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou erro de regra de negócio")
+    })
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<LoanResponseDTO> cancelLoan(@PathVariable UUID id) {
+        Loan loan = loanService.cancelLoan(id);
+        LoanResponseDTO response = LoanResponseDTO.toDto(loan);
+
+        return  ResponseEntity.ok(response);
     }
 }

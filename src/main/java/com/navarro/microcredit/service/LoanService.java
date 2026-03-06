@@ -50,6 +50,28 @@ public class LoanService {
         return savedLoan;
     }
 
+    @Transactional
+    public Loan payLoan(UUID loanId) {
+        return changeLoanStatus(loanId, StateLoan.RAID);
+    }
+
+    @Transactional
+    public Loan cancelLoan(UUID loanId) {
+        return changeLoanStatus(loanId, StateLoan.CANCELED);
+    }
+
+    private Loan changeLoanStatus(UUID loanId, StateLoan state) {
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new IllegalArgumentException("Empréstimo não existente!"));
+
+        if (loan.getStateLoan() != StateLoan.APPROVED) {
+            throw new IllegalStateException("Empréstimo precisa ser aprovado para que a situação seja alterada.");
+        }
+
+        loan.setStateLoan(state);
+        return loan;
+    }
+
     private InterestCalculatorStrategy chooseStrategyBasedOnIncome(BigDecimal monthlyIncome) {
         BigDecimal incomeThreshold = new BigDecimal("5000.00");
 
