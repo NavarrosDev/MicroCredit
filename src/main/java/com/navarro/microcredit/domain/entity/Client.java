@@ -32,6 +32,6 @@ public class Client {
     @Column(nullable = false)
     private BigDecimal monthlyIncome;
 
-    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Loan> loans = new ArrayList<>();
 }

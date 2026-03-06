@@ -1,6 +1,7 @@
 package com.navarro.microcredit.service;
 
 import com.navarro.microcredit.domain.entity.Client;
+import com.navarro.microcredit.domain.enums.StateLoan;
 import com.navarro.microcredit.infraestructure.repository.ClientRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,9 +38,11 @@ public class ClientService {
         Client client = clientRepository.findByCpf(cpf)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente inexistente.") );
 
-        if (!client.getLoans().isEmpty()) {
-            throw new IllegalArgumentException("Cliente possui empréstimos vinculados.");
-        }
+        client.getLoans().forEach(loan -> {
+            if (loan.getStateLoan() == StateLoan.APPROVED) {
+                throw new IllegalArgumentException("Cliente possui empréstimos vinculados.");
+            }
+        });
 
         clientRepository.delete(client);
     }
