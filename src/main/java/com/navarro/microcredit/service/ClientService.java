@@ -4,6 +4,8 @@ import com.navarro.microcredit.domain.entity.Client;
 import com.navarro.microcredit.domain.enums.StateLoan;
 import com.navarro.microcredit.infraestructure.repository.ClientRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,6 +15,10 @@ import java.math.BigDecimal;
 public class ClientService {
 
     private final ClientRepository clientRepository;
+
+    public Page<Client> findAllClients(Pageable pageable) {
+        return clientRepository.findAll(pageable);
+    }
 
     public Client getClientByCpf(String cpf) {
         return clientRepository.findByCpf(cpf)

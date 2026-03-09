@@ -8,9 +8,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/client")
@@ -19,8 +24,29 @@ public class ClientController {
     private final ClientService clientService;
 
     @Operation(
+            summary = "Busca todos clientes.",
+            description = "Busca todos clientes e todos seus empréstimos."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou erro de regra de negócio")
+    })
+    @GetMapping()
+    public ResponseEntity<PageResponseDTO<ClientLoansDTO>> getAllClients(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Client> clients = clientService.findAllClients(pageable);
+
+        return ResponseEntity.ok(
+                PageResponseDTO.fromPage(clients, ClientLoansDTO::toDto)
+        );
+    }
+
+    @Operation(
             summary = "Busca de um cliente por cpf.",
-            description = "Busca um cpf pelo seu cpf e ja lista todos seus empréstimos."
+            description = "Busca um cliente pelo seu cpf e ja lista todos seus empréstimos."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
