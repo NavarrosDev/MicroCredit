@@ -127,7 +127,7 @@ class LoanServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar IllegalArgumentException quando tentar quitar um empréstimo inexistente")
+    @DisplayName(value = "Deve lançar IllegalArgumentException quando tentar quitar um empréstimo inexistente")
     void shouldThrowExceptionWhenLoanNotFoundInPayLoan() {
         // 1. Arrange
         UUID loanId = UUID.randomUUID();
@@ -151,7 +151,7 @@ class LoanServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar IllegalArgumentException quando tentar cancelar um empréstimo inexistente")
+    @DisplayName(value = "Deve lançar IllegalArgumentException quando tentar cancelar um empréstimo inexistente")
     void shouldThrowExceptionWhenLoanNotFoundInCancelLoan() {
         // 1. Arrange
         UUID loanId = UUID.randomUUID();
@@ -184,7 +184,6 @@ class LoanServiceTest {
 
         assertEquals("Empréstimo precisa ser aprovado para que a situação seja alterada.", res.getMessage());
     }
-
 
     private void mockLoanSave() {
         when(loanRepository.save(any(Loan.class)))
