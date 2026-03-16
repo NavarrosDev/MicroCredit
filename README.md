@@ -62,7 +62,7 @@ RabbitMQ (evento credit-analysis-requested)
 Credit Analysis Consumer
   │
   ▼
-Atualiza status APPROVED / REJECTED
+Atualiza status APPROVED / DENIED
 ```
 
 ---
@@ -127,63 +127,6 @@ exception/      -> Tratamento global de erros
 
 ---
 
-# Endpoints Principais
-
-## Criar solicitação de crédito
-
-POST `/api/loans`
-
-Request:
-
-```json
-{
-  "customerId": 1,
-  "amount": 5000,
-  "termMonths": 12
-}
-```
-
-Response:
-
-```json
-{
-  "loanId": 10,
-  "status": "PENDING"
-}
-```
-
----
-
-## Consultar status da solicitação
-
-GET `/api/loans/{id}`
-
-Response:
-
-```json
-{
-  "loanId": 10,
-  "customerId": 1,
-  "amount": 5000,
-  "status": "APPROVED"
-}
-```
-
----
-
-# Fluxo de Processamento
-
-1. Cliente envia solicitação de crédito
-2. API registra a proposta com status `PENDING`
-3. Evento `credit-analysis-requested` é publicado no RabbitMQ
-4. Consumer executa validações de crédito
-5. Sistema atualiza status para:
-
-- `APPROVED`
-- `REJECTED`
-
----
-
 # Como Executar o Projeto
 
 ## Pré-requisitos
@@ -201,7 +144,7 @@ Response:
 git clone https://github.com/NavarrosDev/MicroCredit.git
 ```
 
-```
+```bash
 cd microcredit
 ```
 
@@ -254,7 +197,6 @@ O projeto utiliza:
 
 - **JUnit 5** para testes unitários
 - **Mockito** para criação de mocks e isolamento de dependências
-
 
 ---
 
